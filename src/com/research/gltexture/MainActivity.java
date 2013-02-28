@@ -10,6 +10,7 @@ import android.view.WindowManager.LayoutParams;
 public class MainActivity extends Activity {
 	private GLLayer glView;
 	private CamLayer mPreview;
+	private TextView tv;
 	
     @SuppressWarnings("deprecation")
 	@Override
@@ -26,9 +27,11 @@ public class MainActivity extends Activity {
         glView.setEGLContextClientVersion(2);
         glView.setRenderer(glView);
         mPreview = new CamLayer(this, glView);
+        tv = new TextView(this);
         
         setContentView(mPreview);
         addContentView(glView, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+        addContentView(tv, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     }
     
     public void onResume(){
