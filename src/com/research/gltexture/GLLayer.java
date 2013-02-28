@@ -140,7 +140,7 @@ public class GLLayer extends GLSurfaceView implements SurfaceHolder.Callback,
 	
 	protected String getFragmentShader()
 	{
-		return RawResourceReader.readTextFileFromRawResource(mActivityContext, R.raw.fragment_shader);
+		return RawResourceReader.readTextFileFromRawResource(mActivityContext, R.raw.toon_fragment_shader);
 	}
 	
 	@Override
@@ -284,17 +284,27 @@ public class GLLayer extends GLSurfaceView implements SurfaceHolder.Callback,
 	 * image with a size of 512 x 512 pixels. Afterwards rendering the frame
 	 */
 	public void onPreviewFrame(byte[] frameByte, Camera camera){
-		int bwCounter = 0;
-		int yuvsCounter = 0;
-		for(int y = 0; y < 511; y++){
-			System.arraycopy(frameByte, yuvsCounter, glCameraFrame, bwCounter, 960*3);
-			yuvsCounter += 960*3;
-			bwCounter += 512;
+		synchronized(this) {
+			int w = CamLayer.previewSize.width;
+			int h = CamLayer.previewSize.height;
+		
+			byte[] tempbb = new byte[w*h*3];
+			yuv420rgb(frameByte, w, h, 0, tempbb);
+		
+			int bwCounter = 0;
+			int yuvsCounter = 0;
+			for(int y = 0; y < 511; y++){
+				System.arraycopy(tempbb, yuvsCounter, glCameraFrame, bwCounter, 960*3);
+				yuvsCounter += 960*3;
+				bwCounter += 512*3;
+			}
 		}
+		
 		//byte to bitmap
 		//glCameraFrame = BitmapFactory.decodeByteArray(frameByte, 0, frameByte.length);
 		//System.arraycopy(frameByte, 0, glCameraFrame, 0, frameByte.length);
 		
+		//yuv420rgb(frameByte, 512, 512, 512, glCameraFrame);   
 	}
 	
 	/**
@@ -314,7 +324,7 @@ public class GLLayer extends GLSurfaceView implements SurfaceHolder.Callback,
 			{
 				GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
 				GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGB, 512, 512, 0, 
-						GLES20.GL_RGB, GLES20.GL_UNSIGNED_SHORT_5_6_5, ByteBuffer.wrap(glCameraFrame));
+						GLES20.GL_RGB, GLES20.GL_UNSIGNED_BYTE, ByteBuffer.wrap(glCameraFrame));
 				
 				//Bitmap bmp = BitmapFactory.decodeByteArray(glCameraFrame, 0, glCameraFrame.length);
 				
@@ -326,4 +336,22 @@ public class GLLayer extends GLSurfaceView implements SurfaceHolder.Callback,
 
 		}
 	}
+	
+	  /**
+     * native libraries
+     */
+    static { 
+        //System.loadLibrary( "imageprocessing" );
+        System.loadLibrary( "yuv420rgb" );       
+    } 
+    
+    /**
+     * native function, that converts a byte array from ycbcr420 to RGB
+     * @param in
+     * @param width
+     * @param height
+     * @param textureSize
+     * @param out
+     */
+    private native void yuv420rgb(byte[] in, int width, int height, int textureSize, byte[] out);
 }

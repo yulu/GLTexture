@@ -21,6 +21,7 @@ public class MainActivity extends Activity {
         win.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         glView = new GLLayer(this);
         glView.setEGLContextClientVersion(2);
         glView.setRenderer(glView);
