@@ -12,8 +12,9 @@ extern "C" {
  * Method:    yuv420sp2rgb
  * Signature: ([BIII[B)V
  */
-JNIEXPORT void JNICALL Java_com_research_gltexture_GLLayer_yuv420rgb
-  (JNIEnv *, jobject, jbyteArray, jint, jint, jint, jbyteArray);
+JNIEXPORT void JNICALL Java_com_research_gltexture_GLLayer_yuv420rgb(JNIEnv* env, jobject object,
+		  jbyteArray pinArray, jint width, jint height,
+		  jbyteArray poutArray, jint out_w, jint out_h);
 
 #ifdef __cplusplus
 }

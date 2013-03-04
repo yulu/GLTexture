@@ -140,7 +140,7 @@ public class GLLayer extends GLSurfaceView implements SurfaceHolder.Callback,
 	
 	protected String getFragmentShader()
 	{
-		return RawResourceReader.readTextFileFromRawResource(mActivityContext, R.raw.toon_fragment_shader);
+		return RawResourceReader.readTextFileFromRawResource(mActivityContext, R.raw.fragment_shader);
 	}
 	
 	@Override
@@ -288,16 +288,16 @@ public class GLLayer extends GLSurfaceView implements SurfaceHolder.Callback,
 			int w = CamLayer.previewSize.width;
 			int h = CamLayer.previewSize.height;
 		
-			byte[] tempbb = new byte[w*h*3];
-			yuv420rgb(frameByte, w, h, 0, tempbb);
+			//byte[] tempbb = new byte[w*h*3];
+			yuv420rgb(frameByte, w, h, glCameraFrame, 512, 512);
 		
-			int bwCounter = 0;
+			/*int bwCounter = 0;
 			int yuvsCounter = 0;
 			for(int y = 0; y < 511; y++){
 				System.arraycopy(tempbb, yuvsCounter, glCameraFrame, bwCounter, 960*3);
 				yuvsCounter += 960*3;
 				bwCounter += 512*3;
-			}
+			}*/
 		}
 		
 		//byte to bitmap
@@ -353,5 +353,6 @@ public class GLLayer extends GLSurfaceView implements SurfaceHolder.Callback,
      * @param textureSize
      * @param out
      */
-    private native void yuv420rgb(byte[] in, int width, int height, int textureSize, byte[] out);
+    private native void yuv420rgb(byte[] in, int width, int height, 
+    							  byte[] out, int out_w, int out_h);
 }

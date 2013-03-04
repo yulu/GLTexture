@@ -12,7 +12,6 @@ public class MainActivity extends Activity {
 	private CamLayer mPreview;
 	private TextView tv;
 	
-    @SuppressWarnings("deprecation")
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
