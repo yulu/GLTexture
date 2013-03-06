@@ -41,7 +41,7 @@ public class TextView extends View{
 		int date = cal.get(Calendar.DATE);
 		int month = cal.get(Calendar.MONTH);
 		int year = cal.get(Calendar.YEAR);
-		String s_date = String.valueOf(date) + "/" + String.valueOf(month)+"/"+String.valueOf(year);
+		String s_date = String.valueOf(date) + "/" + String.valueOf(month+1)+"/"+String.valueOf(year);
 		
 		return s_date;
 	}
